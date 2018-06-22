@@ -1,6 +1,4 @@
 import {NativeModules} from 'react-native';
-console.warn("internal")
-console.warn(NativeModules.TwilioModule)
 module.exports = NativeModules.TwilioModule;
 
 

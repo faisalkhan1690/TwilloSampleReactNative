@@ -24,7 +24,6 @@ export default class App extends Component {
             onPress={()=>
               {
                 TwilioModule.show("Hello World");
-                console.warn("Login Clicked")
               }
           }
        />

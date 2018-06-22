@@ -1,7 +1,5 @@
 rootProject.name = 'TwilloSampleReactNative'
 include ':react-native-twilio-sdk'
 project(':react-native-twilio-sdk').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-twilio-sdk/android')
-include ':react-native-vidyo-sdk'
-project(':react-native-vidyo-sdk').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vidyo-sdk/android')
 
 include ':app'
