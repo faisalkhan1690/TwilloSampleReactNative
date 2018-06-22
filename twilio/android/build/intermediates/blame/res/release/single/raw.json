@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/home/user/Work/my_react_natve/TwilloSampleReactNative/node_modules/react-native-twilio-sdk/android/build/intermediates/res/merged/release/raw/disconnect.wav",
+        "source": "/home/user/Work/my_react_natve/TwilloSampleReactNative/node_modules/react-native-twilio-sdk/android/build/intermediates/exploded-aar/com.twilio/client-android/1.2.16/res/raw/disconnect.wav"
+    },
+    {
+        "merged": "/home/user/Work/my_react_natve/TwilloSampleReactNative/node_modules/react-native-twilio-sdk/android/build/intermediates/res/merged/release/raw/outgoing.wav",
+        "source": "/home/user/Work/my_react_natve/TwilloSampleReactNative/node_modules/react-native-twilio-sdk/android/build/intermediates/exploded-aar/com.twilio/client-android/1.2.16/res/raw/outgoing.wav"
+    },
+    {
+        "merged": "/home/user/Work/my_react_natve/TwilloSampleReactNative/node_modules/react-native-twilio-sdk/android/build/intermediates/res/merged/release/raw/incoming.wav",
+        "source": "/home/user/Work/my_react_natve/TwilloSampleReactNative/node_modules/react-native-twilio-sdk/android/build/intermediates/exploded-aar/com.twilio/client-android/1.2.16/res/raw/incoming.wav"
+    }
+]

@@ -10,6 +10,9 @@ import {
   Button,
   View
 } from 'react-native';
+import TwilioModule from 'react-native-twilio-sdk';
+
+
 
 export default class App extends Component {
 
@@ -20,6 +23,7 @@ export default class App extends Component {
           title="Click to login"
             onPress={()=>
               {
+                TwilioModule.show("Hello World");
                 console.warn("Login Clicked")
               }
           }
