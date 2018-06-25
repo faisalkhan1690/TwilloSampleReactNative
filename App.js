@@ -16,6 +16,13 @@ import TwilioModule from 'react-native-twilio-sdk';
 
 export default class App extends Component {
 
+  SERVER_TOKEN_URL='https://YOUR_DOMAIN_HERE.twil.io/chat-token';
+  DEFAULT_CHANNEL_NAME='general';
+  TAG='TwilioChat'
+  mIdentity = 'USER_IDENTITY';
+
+
+
   render() {
     return (
       <View style={styles.container}>
