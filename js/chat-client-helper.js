@@ -12,6 +12,9 @@ export default class ChatClientHelper {
     this.host = tokenAndConfigurationProviderHost;
     this.log = log;
     this.client = null;
+    this.state = {
+      channel: ''
+    }
   }
 
   login(identity, pushChannel, registerForPushCallback, showPushCallback) {
@@ -21,10 +24,33 @@ export default class ChatClientHelper {
         let chatClientConfig = response.json();
         that.log.info('login', 'Got Chat client configuration', chatClientConfig);
         return this.getToken(identity, pushChannel)
-          .then(function(token) {
+          .then(function (token) {
             that.log.info('ChatClientHelper', 'got chat token', token);
             return TwilioChatClient.create(token, chatClientConfig.options || {}).then((chatClient) => {
               that.client = chatClient;
+              that.client.getUserChannelDescriptors().then(function (paginator) {
+                console.log(paginator)
+                for (var i = 0; i < paginator.items.length; i++) {
+                  var channel = paginator.items[i];
+                  console.log('Channel: ' + channel.friendlyName);
+                  // console.log(channel);
+                }
+              });
+
+              that.client
+                .createChannel({
+                  uniqueName: 'general1234',
+                  friendlyName: 'General Chat Channel',
+                })
+                .then(function (channel) {
+                  console.log('Created general channel:');
+                  console.log(channel.join());
+                  channel.join().sendMessage("msg")
+                });
+              console.log("here", that.client)
+
+              // that.client.getPublicChannels()
+              //   .then(res => console.log("123",res));
               that.client.on('tokenAboutToExpire', () => {
                 that.getToken(identity, pushChannel)
                   .then(newData => that.client.updateToken(newData))
@@ -63,8 +89,9 @@ export default class ChatClientHelper {
   }
 
   subscribeToAllChatClientEvents() {
+
     this.client.on('tokenAboutToExpire',
-                   obj => this.log.event('ChatClientHelper.client', 'tokenAboutToExpire', obj));
+      obj => this.log.event('ChatClientHelper.client', 'tokenAboutToExpire', obj));
     this.client.on('tokenExpired', obj => this.log.event('ChatClientHelper.client', 'tokenExpired', obj));
 
     this.client.on('userSubscribed', obj => this.log.event('ChatClientHelper.client', 'userSubscribed', obj));
@@ -90,7 +117,7 @@ export default class ChatClientHelper {
     this.client.on('typingEnded', obj => this.log.event('ChatClientHelper.client', 'typingEnded', obj));
 
     this.client.on('connectionStateChanged',
-                   obj => this.log.event('ChatClientHelper.client', 'connectionStateChanged', obj));
+      obj => this.log.event('ChatClientHelper.client', 'connectionStateChanged', obj));
 
     this.client.on('pushNotification', obj => this.log.event('ChatClientHelper.client', 'onPushNotification', obj));
   };

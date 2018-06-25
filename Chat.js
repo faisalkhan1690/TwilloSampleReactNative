@@ -1,15 +1,16 @@
+
+
 import React, { Component } from "react";
-import { AppRegistry } from "react-native";
 import Login from "./js/components/Login";
 import EventsLog from "./js/components/EventsLog";
-import Log from "./js/logging";
-import ApnSupport from "./js/ApnsSupportModule";
 import ChatClientHelper from "./js/chat-client-helper";
+import Log from "./js/logging";
+import FirebaseSupport from "./js/FirebaseSupportModule";
 
 ngrokSubdomainName = require('./configuration.json').ngrokSubdomain;
 const host = 'http://' + ngrokSubdomainName + '.ngrok.io';
 
-export default class App extends Component {
+export default class TwilioChatJsReactNative extends Component {
 
   state = {
     chatClientHelper: null,
@@ -20,7 +21,7 @@ export default class App extends Component {
     let log = new Log(this.addNewLog.bind(this));
     let chatClientHelper = new ChatClientHelper(host, log);
     chatClientHelper.login(
-      username, 'apns', ApnSupport.registerForPushCallback, ApnSupport.showPushCallback);
+      username, 'fcm', FirebaseSupport.registerForPushCallback, FirebaseSupport.showPushCallback);
     this.setState({ chatClientHelper });
   }
 
