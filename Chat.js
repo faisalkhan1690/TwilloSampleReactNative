@@ -1,91 +1,44 @@
-import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Button,
-  View,
-  Text,
-  TextInput, TouchableOpacity,
-  TouchableWithoutFeedback,
-  Alert
-} from 'react-native';
+import React, { Component } from "react";
+import { AppRegistry } from "react-native";
+import Login from "./js/components/Login";
+import EventsLog from "./js/components/EventsLog";
+import Log from "./js/logging";
+import ApnSupport from "./js/ApnsSupportModule";
+import ChatClientHelper from "./js/chat-client-helper";
 
-
-import {
-  TwilioVideo,
-  TwilioVideoLocalView,
-  TwilioVideoParticipantView
-} from 'react-native-twilio-video-webrtc'
-
+ngrokSubdomainName = require('./configuration.json').ngrokSubdomain;
+const host = 'http://' + ngrokSubdomainName + '.ngrok.io';
 
 export default class App extends Component {
-  _onVideoConnectButtonPress = () => {
-    this.refs.twilioVideo.connect({roomName: "myroom", accessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTSzY1NGY1OGQ1ODYzMTk2NmMwYWQyMzI0OWVkODEzMDI4LTE1Mjk5MTEyNDEiLCJpc3MiOiJTSzY1NGY1OGQ1ODYzMTk2NmMwYWQyMzI0OWVkODEzMDI4Iiwic3ViIjoiQUMxZTM2MGViNzgyNTRiZmYxZGIyNjMxZDI1YzdkMTg5OCIsImV4cCI6MTUyOTkxNDg0MSwiZ3JhbnRzIjp7ImlkZW50aXR5IjoiVXNlciAyICIsInZpZGVvIjp7fX19.dboEF4g909HtnGAp8SZn8_s6z8-Bnm-h_VLvmuWpeLY"});
-  }
 
-  _onVideoDisconnectButtonPress = () => {
-    this.refs.twilioVideo.disconnect();
-  }
-
-  _onVideoConnectFailure = (response) => {
-      Alert.alert('', 'Connect failure: ' + JSON.stringify(response));
+  state = {
+    chatClientHelper: null,
+    log: []
   };
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <TwilioVideo ref="twilioVideo" onRoomDidFailToConnect={this._onVideoConnectFailure} />
+  login(username, host) {
+    let log = new Log(this.addNewLog.bind(this));
+    let chatClientHelper = new ChatClientHelper(host, log);
+    chatClientHelper.login(
+      username, 'apns', ApnSupport.registerForPushCallback, ApnSupport.showPushCallback);
+    this.setState({ chatClientHelper });
+  }
 
-        <View style={styles.videoViewParent}>
-          <TwilioVideoLocalView style={styles.videoViewContainer} />
-          <TwilioVideoParticipantView style={styles.videoViewContainer} />
-        </View>
-        <View style={styles.videoControls}>
-          <TouchableWithoutFeedback onPress={this._onVideoConnectButtonPress}>
-            <View style={styles.videoControlBtn}>
-              <Text style={styles.videoControlBtnText}>CONNECT</Text>
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={this._onVideoDisconnectButtonPress}>
-            <View style={styles.videoControlBtn}>
-              <Text style={styles.videoControlBtnText}>DISCONNECT</Text>
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-      </View>
-    );
+  addNewLog(string) {
+    let log = this.state.log;
+    log.push(string + "\n");
+    this.setState({ log });
+  }
+
+  render() {
+    if (this.state.chatClientHelper === null) {
+      return (
+        <Login host={ host } login={ this.login.bind(this) }/>
+      );
+    } else {
+      return (
+        <EventsLog eventslog={ this.state.log } />
+      );
+    }
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-      flex: 1,
-      backgroundColor: '#FFFFFF'
-  },
-  videoViewParent: {
-      width: '100%',
-      height: 150,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      backgroundColor: '#FFFFFF'
-  },
-  videoViewContainer: {
-      flex: 0.5,
-      backgroundColor: '#FFFFFF'
-  },
-  videoControls: {
-      height: 50,
-      width: '100%',
-      flexDirection: 'row',
-      alignItems: 'center'
-  },
-  videoControlBtn: {
-      flex: 0.5,
-      backgroundColor: '#FF0000'
-  },
-  videoControlBtnText: {
-      fontSize: 20,
-      padding: 10,
-      color: '#FFFFFF',
-      textAlign: 'center'
-  }
-});
