@@ -28,26 +28,34 @@ export default class ChatClientHelper {
             that.log.info('ChatClientHelper', 'got chat token', token);
             return TwilioChatClient.create(token, chatClientConfig.options || {}).then((chatClient) => {
               that.client = chatClient;
+
               that.client.getUserChannelDescriptors().then(function (paginator) {
-                console.log(paginator)
+                console.log(paginator);
                 for (var i = 0; i < paginator.items.length; i++) {
                   var channel = paginator.items[i];
                   console.log('Channel: ' + channel.friendlyName);
-                  // console.log(channel);
+                  // try {
+                  //   channel.join()
+                  // } catch (error) {
+                  //   console.log(error)
+                  // }
                 }
               });
 
               that.client
-                .createChannel({
-                  uniqueName: 'general1234',
-                  friendlyName: 'General Chat Channel',
+                .getChannelByUniqueName("general123")
+                .then(channel => {
+                  if (channel) {
+                    try {
+                      channel.getMessages().then((res)=>{
+                        console.log(res)
+                      });
+                      channel.sendMessage("Hello World");
+                    } catch (error) {
+                      console.log(error)
+                    }
+                  }
                 })
-                .then(function (channel) {
-                  console.log('Created general channel:');
-                  console.log(channel.join());
-                  channel.join().sendMessage("msg")
-                });
-              console.log("here", that.client)
 
               // that.client.getPublicChannels()
               //   .then(res => console.log("123",res));
